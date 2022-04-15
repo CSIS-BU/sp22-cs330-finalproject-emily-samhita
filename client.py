@@ -13,7 +13,7 @@ def get_prompt(c):
     return 0
 
 def recv_story(c):
-    print('recieving story:\n')
+    print('receiving story:\n')
     full_message = bytearray()
     while True:
         message = c.recv(RECV_BUFFER_SIZE)
