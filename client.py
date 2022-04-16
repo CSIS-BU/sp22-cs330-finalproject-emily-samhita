@@ -24,11 +24,20 @@ def recv_story(c):
     stdout.flush()
 
 def play_game(client):
+    # user chooses a story
     title = client.recv(RECV_BUFFER_SIZE)
-    print('Playing story: ', title.decode(), '\n')
-    while(get_prompt(client) != 1):
+    print(title.decode())
+    choice = input()
+    client.send(choice.encode())
+    
+    
+    title = client.recv(RECV_BUFFER_SIZE) 
+    print('Playing story: ', title.decode(), '\n') 
+    
+    while(get_prompt(client) != 1): 
         answer = input()
         client.send(answer.encode())
+        
     recv_story(client)
     return
 
