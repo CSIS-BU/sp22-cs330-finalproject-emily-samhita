@@ -5,37 +5,46 @@ from sys import *
 
 RECV_BUFFER_SIZE = 2048
 
+def get_line(c, buf):
+    while b'\0' not in buf:
+        data = c.recv(RECV_BUFFER_SIZE)
+        if not data: # socket closed
+            return None
+        buf += data
+    line,sep,buf = buf.partition(b'\0')
+    return line.decode()
+
 def get_prompt(c):
-    prompt = c.recv(RECV_BUFFER_SIZE)
-    if(prompt.decode() == "DONE"):
+    prompt = get_line(c, b'')
+    if(prompt == "DONE"):
         return 1
-    print('Enter a ', prompt.decode(), ': ')
+    print('Enter a ', prompt, ': ')
     return 0
 
 def recv_story(c):
     print('receiving story:\n')
-    full_message = bytearray()
+    full_message = ''
     while True:
-        message = c.recv(RECV_BUFFER_SIZE)
-        if(len(message) <= 0):
+        message = get_line(c, b'')
+        if(message == None or len(message) <= 0):
             break
         full_message += message
-    stdout.buffer.write(full_message)
+    stdout.buffer.write(full_message.encode())
     stdout.flush()
 
 def play_game(client):
     # user chooses a story
-    title = client.recv(RECV_BUFFER_SIZE)
-    print(title.decode())
-    choice = input()
+    title = get_line(client, b'')
+    print(title)
+    choice = input() +str('\0')
     client.send(choice.encode())
     
     
-    title = client.recv(RECV_BUFFER_SIZE) 
-    print('Playing story: ', title.decode(), '\n') 
+    title = get_line(client, b'') 
+    print('Playing story: ', title, '\n') 
     
     while(get_prompt(client) != 1): 
-        answer = input()
+        answer = input() +str('\0')
         client.send(answer.encode())
         
     recv_story(client)
@@ -43,7 +52,7 @@ def play_game(client):
 
 def main():
     serverName = 'localhost'  #IP address
-    serverPort = 12006  # destination port number 
+    serverPort = 12007  # destination port number 
     clientSocket = socket(AF_INET, SOCK_STREAM)  #creates socket
 
     print('----- TCP Client is ready. -----')
