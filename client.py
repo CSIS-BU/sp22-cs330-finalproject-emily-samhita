@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from pydoc import cli
 from socket import *
 from sys import *
 
@@ -34,14 +35,13 @@ def recv_story(c):
 
 def play_game(client):
     # user chooses a story
-    title = get_line(client, b'')
-    print(title)
-    choice = input() +str('\0')
-    client.send(choice.encode())
-    
-    
-    title = get_line(client, b'') 
-    print('Playing story: ', title, '\n') 
+    while True:
+        titlePrompt = get_line(client, b'')
+        print(titlePrompt)
+        choice = input() +str('\0')
+        client.send(choice.encode())
+        if (get_line(client, b'') != "INVALID"): 
+            break
     
     while(get_prompt(client) != 1): 
         answer = input() +str('\0')
@@ -52,7 +52,7 @@ def play_game(client):
 
 def main():
     serverName = 'localhost'  #IP address
-    serverPort = 12007  # destination port number 
+    serverPort = 12011  # destination port number 
     clientSocket = socket(AF_INET, SOCK_STREAM)  #creates socket
 
     print('----- TCP Client is ready. -----')
