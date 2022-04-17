@@ -1,7 +1,6 @@
-Growing up I remember the weather being <adjective> on my <Noun> . To make matters worse, after moving to America I found out that my birthday 
-fall on <Noun>. 
-At first I was really annoyed, but  I grew to <verb> it. This year was the same, it was <adjective> really bad. Earlier that day, 
-I went to get <Noun> with my roommate.
-As I was walking towards her  car, I <verb> and <verb> . sigh, My day could've definitley started out better but it wanted to <verb> my <verb>.
-We got back to our <Noun> after doing what we needed to do and after that I was able to spend the rest of the day with <Noun> and <Noun> and that 
-definitley made my <Noun> better.
+Growing up I remember the weather being <ADJECTIVE> on my <NOUN> . To make matters worse, after moving to America I found out that my birthday 
+falls on National <NOUN> Day. 
+I've always hated it. This year was the same, it was really <ADJECTIVE>. Earlier that day, I went to get <PLURAL NOUN> with my roommate.
+As I was walking towards her car, I <VERB> and <VERB>. My day could've definitley started out better!
+We got back to our <NOUN> after doing what we needed to do, and after that I was able to spend the rest of the day with my trusty <NOUN> 
+and doing my favorite activity: <VERB>. That definitley made my birthday better.

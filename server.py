@@ -16,14 +16,16 @@ def get_line(c, buf):
 
 def choose_story(c):
     # ask client to choose a story
-    askClient = ("Choose a story (1), (2), (3): \0")
-    c.send(askClient.encode())
-    choice1 = get_line(c, b'')
-    return choice1
-
-##    story_arr = ['test1', 'test2'] 
-##    choice = randint(0, len(story_arr) - 1) # randomly chooses a story
-##    return story_arr[choice]
+    while True:
+        askClient = ("Enter a number to choose a story:\n1) Amusement Park\n2) Bakery\n3) Birthday \0")
+        c.send(askClient.encode())
+        choice = get_line(c, b'')
+        if(choice in ['1', '2', '3']):
+            c.send(str.encode('VALID\0'))
+            break
+        else:
+            c.send(str.encode('INVALID\0'))
+    return choice
 
 def get_prompts(title):
     ## TODO
@@ -44,7 +46,6 @@ def make_story(responses):
 def play_game(connection):
     ## pick story, send title
     title = choose_story(connection) +str('\0')
-    connection.send(title.encode()) 
     
     prompt_arr = get_prompts(title) 
     
@@ -58,7 +59,7 @@ def play_game(connection):
     return
 
 def main():
-    serverPort = 12007 #port number
+    serverPort = 12011 #port number
     serverSocket = socket(AF_INET, SOCK_STREAM) #create socket
     try:
         serverSocket.bind(('',serverPort)) #bind port number with socket
