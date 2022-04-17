@@ -2,15 +2,23 @@
 
 from socket import *
 from _thread import *
-from random import randint
 
 RECV_BUFFER_SIZE = 2048
 
+def get_line(c, buf):
+    while b'\0' not in buf:
+        data = c.recv(RECV_BUFFER_SIZE)
+        if not data: # socket closed
+            return None
+        buf += data
+    line,sep,buf = buf.partition(b'\0')
+    return line.decode()
+
 def choose_story(c):
     # ask client to choose a story
-    askClient = ("Choose a story (1), (2), (3): ")
+    askClient = ("Choose a story (1), (2), (3): \0")
     c.send(askClient.encode())
-    choice1 = c.recv(RECV_BUFFER_SIZE).decode()
+    choice1 = get_line(c, b'')
     return choice1
 
 ##    story_arr = ['test1', 'test2'] 
@@ -23,9 +31,10 @@ def get_prompts(title):
     return ['<NOUN>', '<VERB>', '<ADJ>']
 
 def send_prompt(prompt, c):
+    prompt += '\0'
     c.send(prompt.encode())
     print('sending ', prompt)
-    return c.recv(RECV_BUFFER_SIZE).decode()
+    return get_line(c, b'')
 
 def make_story(responses):
     ## TODO
@@ -34,22 +43,22 @@ def make_story(responses):
 
 def play_game(connection):
     ## pick story, send title
-    title = choose_story(connection) 
+    title = choose_story(connection) +str('\0')
     connection.send(title.encode()) 
     
     prompt_arr = get_prompts(title) 
     
     resp_arr = [send_prompt(p, connection) for p in prompt_arr] 
-    connection.send(str.encode('DONE'))
+    connection.send(str.encode('DONE\0'))
     print(resp_arr) 
     
-    story = make_story(resp_arr)
+    story = make_story(resp_arr) +str('\0')
     connection.sendall(story.encode())
     connection.close()
     return
 
 def main():
-    serverPort = 12006 #port number
+    serverPort = 12007 #port number
     serverSocket = socket(AF_INET, SOCK_STREAM) #create socket
     try:
         serverSocket.bind(('',serverPort)) #bind port number with socket
