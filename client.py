@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from pydoc import cli
 from socket import *
 from sys import *
 
