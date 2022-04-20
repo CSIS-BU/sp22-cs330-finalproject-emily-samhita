@@ -52,7 +52,7 @@ def play_game(client):
 
 def main():
     serverName = 'localhost'  #IP address
-    serverPort = 12011  # destination port number 
+    serverPort = 12131  # destination port number 
     clientSocket = socket(AF_INET, SOCK_STREAM)  #creates socket
 
     print('----- TCP Client is ready. -----')
