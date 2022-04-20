@@ -2,6 +2,7 @@
 
 from socket import *
 from _thread import *
+import re
 
 RECV_BUFFER_SIZE = 2048
 
@@ -28,9 +29,19 @@ def choose_story(c):
     return choice
 
 def get_prompts(title):
-    ## TODO
+    ## TODO: read files from stories folder
+
+    # extract prompts from story
+    file1 = open("test_story.txt") ## CHANGE THIS to open correct file from the stories folder 
+    fileContent = file1.read()
+    file1.close()
+
+    # gets prompts by searching <string> pattern in story & adding it to the list
+    keyword = re.compile('<.*?>',re.IGNORECASE)
+    prompts = keyword.findall(fileContent)
+
     print(title)
-    return ['<NOUN>', '<VERB>', '<ADJ>']
+    return prompts
 
 def send_prompt(prompt, c):
     prompt += '\0'
@@ -40,6 +51,8 @@ def send_prompt(prompt, c):
 
 def make_story(responses):
     ## TODO
+    
+
     print('making story')
     return(' '.join(responses))
 
@@ -59,7 +72,7 @@ def play_game(connection):
     return
 
 def main():
-    serverPort = 12011 #port number
+    serverPort = 12131 #port number
     serverSocket = socket(AF_INET, SOCK_STREAM) #create socket
     try:
         serverSocket.bind(('',serverPort)) #bind port number with socket
