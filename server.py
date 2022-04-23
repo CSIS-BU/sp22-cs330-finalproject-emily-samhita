@@ -41,7 +41,7 @@ def get_prompts(title):
     prompts = keyword.findall(fileContent)
 
     print(title)
-    return prompts
+    return (prompts,fileContent)
 
 def send_prompt(prompt, c):
     prompt += '\0'
@@ -49,30 +49,32 @@ def send_prompt(prompt, c):
     print('sending ', prompt)
     return get_line(c, b'')
 
-def make_story(responses):
-    ## TODO
-    
+def make_story(responses,match,fileContent):
+
+    # replaced prompts with responses from user into the story
+    for i in range(len(match)):
+        fileContent = fileContent.replace(match[i],responses[i],1)
 
     print('making story')
-    return(' '.join(responses))
+    return(fileContent)
 
 def play_game(connection):
     ## pick story, send title
     title = choose_story(connection) +str('\0')
     
-    prompt_arr = get_prompts(title) 
+    prompt_arr,fileContent = get_prompts(title) 
     
     resp_arr = [send_prompt(p, connection) for p in prompt_arr] 
     connection.send(str.encode('DONE\0'))
     print(resp_arr) 
     
-    story = make_story(resp_arr) +str('\0')
+    story = make_story(resp_arr,prompt_arr,fileContent) +str('\0')
     connection.sendall(story.encode())
     connection.close()
     return
 
 def main():
-    serverPort = 12131 #port number
+    serverPort = 12151 #port number
     serverSocket = socket(AF_INET, SOCK_STREAM) #create socket
     try:
         serverSocket.bind(('',serverPort)) #bind port number with socket
