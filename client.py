@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-from pydoc import cli
 from socket import *
-from sys import *
 
 RECV_BUFFER_SIZE = 2048
 
@@ -23,15 +21,13 @@ def get_prompt(c):
     return 0
 
 def recv_story(c):
-    print('receiving story:\n')
-    full_message = ''
+    full_message = '\n'
     while True:
         message = get_line(c, b'')
         if(message == None or len(message) <= 0):
             break
         full_message += message
-    stdout.buffer.write(full_message.encode())
-    stdout.flush()
+    print(full_message)
 
 def play_game(client):
     # user chooses a story
@@ -52,7 +48,7 @@ def play_game(client):
 
 def main():
     serverName = 'localhost'  #IP address
-    serverPort = 12151  # destination port number 
+    serverPort = 12154  # destination port number 
     clientSocket = socket(AF_INET, SOCK_STREAM)  #creates socket
 
     print('----- TCP Client is ready. -----')
