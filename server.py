@@ -3,6 +3,7 @@
 from socket import *
 from _thread import *
 import re
+from pathlib import Path
 
 RECV_BUFFER_SIZE = 2048
 
@@ -29,24 +30,28 @@ def choose_story(c):
     return choice
 
 def get_prompts(title):
-    ## TODO: read files from stories folder
-
+    title = title.strip()[:-1]
+    stories = {'1': 'amusement_park.txt', '2': 'bakery.txt', '3': 'bd_story.txt'}
     # extract prompts from story
-    file1 = open("test_story.txt") ## CHANGE THIS to open correct file from the stories folder 
-    fileContent = file1.read()
-    file1.close()
+    data_folder = Path("./stories")
+    file_to_open = data_folder / stories[title]
+
+    f = open(file_to_open)
+    fileContent = f.read()
+    # extract prompts from story
+    # file1 = open("test_story.txt") ## CHANGE THIS to open correct file from the stories folder 
+    # fileContent = file1.read()
+    # file1.close()
 
     # gets prompts by searching <string> pattern in story & adding it to the list
     keyword = re.compile('<.*?>',re.IGNORECASE)
     prompts = keyword.findall(fileContent)
 
-    print(title)
     return (prompts,fileContent)
 
 def send_prompt(prompt, c):
     prompt += '\0'
     c.send(prompt.encode())
-    print('sending ', prompt)
     return get_line(c, b'')
 
 def make_story(responses,match,fileContent):
@@ -55,7 +60,6 @@ def make_story(responses,match,fileContent):
     for i in range(len(match)):
         fileContent = fileContent.replace(match[i],responses[i],1)
 
-    print('making story')
     return(fileContent)
 
 def play_game(connection):
@@ -66,7 +70,6 @@ def play_game(connection):
     
     resp_arr = [send_prompt(p, connection) for p in prompt_arr] 
     connection.send(str.encode('DONE\0'))
-    print(resp_arr) 
     
     story = make_story(resp_arr,prompt_arr,fileContent) +str('\0')
     connection.sendall(story.encode())
@@ -74,7 +77,7 @@ def play_game(connection):
     return
 
 def main():
-    serverPort = 12151 #port number
+    serverPort = 12154 #port number
     serverSocket = socket(AF_INET, SOCK_STREAM) #create socket
     try:
         serverSocket.bind(('',serverPort)) #bind port number with socket
