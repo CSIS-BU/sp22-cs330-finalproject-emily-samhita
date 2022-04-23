@@ -8,6 +8,7 @@ from pathlib import Path
 RECV_BUFFER_SIZE = 2048
 
 def get_line(c, buf):
+    ## helper function to deal with send/recv not always lining up correctly
     while b'\0' not in buf:
         data = c.recv(RECV_BUFFER_SIZE)
         if not data: # socket closed
@@ -35,18 +36,14 @@ def get_prompts(title):
     # extract prompts from story
     data_folder = Path("./stories")
     file_to_open = data_folder / stories[title]
-
     f = open(file_to_open)
     fileContent = f.read()
-    # extract prompts from story
-    # file1 = open("test_story.txt") ## CHANGE THIS to open correct file from the stories folder 
-    # fileContent = file1.read()
-    # file1.close()
 
     # gets prompts by searching <string> pattern in story & adding it to the list
     keyword = re.compile('<.*?>',re.IGNORECASE)
     prompts = keyword.findall(fileContent)
 
+    ## returning prompt list and full file content so we don't have to open it again
     return (prompts,fileContent)
 
 def send_prompt(prompt, c):
@@ -64,6 +61,7 @@ def make_story(responses,match,fileContent):
 
 def play_game(connection):
     ## pick story, send title
+    print("~~ WELCOME TO MADLIBS ~~")
     title = choose_story(connection) +str('\0')
     
     prompt_arr,fileContent = get_prompts(title) 
@@ -92,8 +90,8 @@ def main():
         try:
             connection, addr = serverSocket.accept()
             print('----- TCP Server accepted connection with ', addr[0], ':', str(addr[1]), ' -----\n')
+            ## multiple user capabilities
             start_new_thread(play_game, (connection, ))
-            print("~~ WELCOME TO MADLIBS ~~")
         except KeyboardInterrupt:
             serverSocket.close()
 
