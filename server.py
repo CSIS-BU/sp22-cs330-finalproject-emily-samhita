@@ -75,7 +75,7 @@ def play_game(connection):
     return
 
 def main():
-    serverPort = 12154 #port number
+    serverPort = 12164 #port number
     serverSocket = socket(AF_INET, SOCK_STREAM) #create socket
     try:
         serverSocket.bind(('',serverPort)) #bind port number with socket
