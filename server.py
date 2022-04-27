@@ -20,10 +20,10 @@ def get_line(c, buf):
 def choose_story(c):
     # ask client to choose a story
     while True:
-        askClient = ("Enter a number to choose a story:\n1) Amusement Park\n2) Bakery\n3) Birthday \0")
+        askClient = ("Enter a number to choose a story:\n1) Amusement Park\n2) Bakery\n3) Birthday\n4) Coffee\n5) Bucky the Dog \0")
         c.send(askClient.encode())
         choice = get_line(c, b'')
-        if(choice in ['1', '2', '3']):
+        if(choice in ['1', '2', '3', '4', '5']):
             c.send(str.encode('VALID\0'))
             break
         else:
@@ -32,7 +32,7 @@ def choose_story(c):
 
 def get_prompts(title):
     title = title.strip()[:-1]
-    stories = {'1': 'amusement_park.txt', '2': 'bakery.txt', '3': 'bd_story.txt'}
+    stories = {'1': 'amusement_park.txt', '2': 'bakery.txt', '3': 'bd_story.txt', '4': 'Coffee.txt', '5': 'Dog.txt'}
     # extract prompts from story
     data_folder = Path("./stories")
     file_to_open = data_folder / stories[title]
