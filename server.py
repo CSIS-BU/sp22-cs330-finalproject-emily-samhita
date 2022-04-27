@@ -8,6 +8,7 @@ from pathlib import Path
 RECV_BUFFER_SIZE = 2048
 
 def get_line(c, buf):
+    buf = b''
     ## helper function to deal with send/recv not always lining up correctly
     while b'\0' not in buf:
         data = c.recv(RECV_BUFFER_SIZE)
@@ -22,7 +23,7 @@ def choose_story(c):
     while True:
         askClient = ("Enter a number to choose a story:\n1) Amusement Park\n2) Bakery\n3) Birthday\n4) Coffee\n5) Bucky the Dog \0")
         c.send(askClient.encode())
-        choice = get_line(c, b'')
+        choice = get_line(c)
         if(choice in ['1', '2', '3', '4', '5']):
             c.send(str.encode('VALID\0'))
             break
@@ -49,7 +50,7 @@ def get_prompts(title):
 def send_prompt(prompt, c):
     prompt += '\0'
     c.send(prompt.encode())
-    return get_line(c, b'')
+    return get_line(c)
 
 def make_story(responses,match,fileContent):
 
@@ -70,7 +71,7 @@ def play_game(connection):
     connection.send(str.encode('DONE\0'))
 
     ## keeps send/recv ing even to prevent the sometimes not recving on the client side error
-    get_line(connection, b'')
+    get_line(connection)
     
     story = make_story(resp_arr,prompt_arr,fileContent) +str('\0')
     connection.sendall(story.encode())

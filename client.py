@@ -4,7 +4,8 @@ from socket import *
 
 RECV_BUFFER_SIZE = 2048
 
-def get_line(c, buf):
+def get_line(c):
+    buf = b''
     ## helper function to deal with send/recv not always lining up correctly
     while b'\0' not in buf:
         data = c.recv(RECV_BUFFER_SIZE)
@@ -15,7 +16,7 @@ def get_line(c, buf):
     return line.decode()
 
 def get_prompt(c):
-    prompt = get_line(c, b'')
+    prompt = get_line(c)
     if(prompt == "DONE"):
         return 1
     print('Enter a ', prompt, ': ')
@@ -25,7 +26,7 @@ def recv_story(c):
     ## prints full story as received from server
     full_message = '\n'
     while True:
-        message = get_line(c, b'')
+        message = get_line(c)
         if(message == None or len(message) <= 0):
             break
         full_message += message
@@ -35,11 +36,11 @@ def recv_story(c):
 def play_game(client):
     # user chooses a story, will repeat until valid answer is received
     while True:
-        titlePrompt = get_line(client, b'')
+        titlePrompt = get_line(client)
         print(titlePrompt)
         choice = input() +str('\0')
         client.send(choice.encode())
-        if (get_line(client, b'') != "INVALID"): 
+        if (get_line(client) != "INVALID"): 
             break
     
     ## answers all prompts
