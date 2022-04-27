@@ -7,7 +7,7 @@ from pathlib import Path
 
 RECV_BUFFER_SIZE = 2048
 
-def get_line(c, buf):
+def get_line(c):
     buf = b''
     ## helper function to deal with send/recv not always lining up correctly
     while b'\0' not in buf:
