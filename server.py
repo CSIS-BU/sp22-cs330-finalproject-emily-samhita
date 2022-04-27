@@ -68,6 +68,9 @@ def play_game(connection):
     
     resp_arr = [send_prompt(p, connection) for p in prompt_arr] 
     connection.send(str.encode('DONE\0'))
+
+    ## keeps send/recv ing even to prevent the sometimes not recving on the client side error
+    get_line(connection, b'')
     
     story = make_story(resp_arr,prompt_arr,fileContent) +str('\0')
     connection.sendall(story.encode())

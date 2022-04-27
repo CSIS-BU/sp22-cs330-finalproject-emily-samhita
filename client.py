@@ -30,6 +30,7 @@ def recv_story(c):
             break
         full_message += message
     print(full_message)
+    return
 
 def play_game(client):
     # user chooses a story, will repeat until valid answer is received
@@ -45,6 +46,9 @@ def play_game(client):
     while(get_prompt(client) != 1): 
         answer = input() +str('\0')
         client.send(answer.encode())
+
+    ## keeps send/recv ing even to prevent the sometimes not recving on the client side error
+    client.send(str.encode('ack\0'))
         
     recv_story(client)
     return
